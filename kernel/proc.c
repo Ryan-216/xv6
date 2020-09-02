@@ -497,10 +497,14 @@ scheduler(void)
       intr_on();
       asm volatile("wfi");
     }
+#if !defined (LAB_FS)
     if(found == 0) {
       intr_on();
       asm volatile("wfi");
     }
+#else
+    ;
+#endif
   }
 }
 
