@@ -21,3 +21,10 @@ xv6.out*
 .vagrant/
 submissions/
 .vscode/
+myapi.key
+*-handin.tar.gz
+xv6.out*
+.vagrant/
+submissions/
+ph
+barrier
