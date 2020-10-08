@@ -44,10 +44,10 @@ def test_ph_fast():
     assert_equal(len(rate1), 1)
     rate1 = float(rate1[0])
     rate2 = float(rate2[0])
-    # demand that 2 threads yield at least 1.25x the
+    # demand that 2 threads yield at least 1.5x the
     # throughput of a single thread.
-    if rate2 < 1.25 * rate1:
-        raise AssertionError('Parallel put() speedup is less than 1.25x')
+    if rate2 < 1.5 * rate1:
+        raise AssertionError('Parallel put() speedup is less than 1.5x')
 
 @test(14, "barrier")
 def test_barrier():
