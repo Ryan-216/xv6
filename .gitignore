@@ -15,7 +15,6 @@ mkfs
 kernel/kernel
 user/usys.S
 .gdbinit
-.vscode/
 myapi.key
 *-handin.tar.gz
 xv6.out*
@@ -23,3 +22,4 @@ xv6.out*
 submissions/
 ph
 barrier
+.vscode/
