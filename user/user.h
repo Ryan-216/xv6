@@ -2,7 +2,6 @@ struct stat;
 struct rtcdate;
 struct sysinfo;
 
-
 // system calls
 int fork(void);
 int exit(int) __attribute__((noreturn));
@@ -28,6 +27,9 @@ int uptime(void);
 int trace(int); //让用户态程序可以找到这个跳板入口函数
 int sysinfo(struct sysinfo*);
 void top(void);
+#ifdef LAB_NET
+int connect(uint32, uint16, uint16);
+#endif
 
 // ulib.c
 int stat(const char*, struct stat*);
@@ -45,3 +47,4 @@ void free(void*);
 int atoi(const char*);
 int memcmp(const void *, const void *, uint);
 void *memcpy(void *, const void *, uint);
+int statistics(void*, int);
