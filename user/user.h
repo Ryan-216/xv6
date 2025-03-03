@@ -1,5 +1,7 @@
 struct stat;
 struct rtcdate;
+struct sysinfo;
+
 
 // system calls
 int fork(void);
@@ -23,6 +25,8 @@ int getpid(void);
 char* sbrk(int);
 int sleep(int);
 int uptime(void);
+int trace(int); //让用户态程序可以找到这个跳板入口函数
+int sysinfo(struct sysinfo*);
 
 // ulib.c
 int stat(const char*, struct stat*);

@@ -66,10 +66,10 @@ mycpu(void) {
 // Return the current struct proc *, or zero if none.
 struct proc*
 myproc(void) {
-  push_off();
+  push_off(); //关闭中断（中断屏蔽）
   struct cpu *c = mycpu();
   struct proc *p = c->proc;
-  pop_off();
+  pop_off();  //恢复中断状态
   return p;
 }
 
@@ -126,6 +126,8 @@ found:
   memset(&p->context, 0, sizeof(p->context));
   p->context.ra = (uint64)forkret;
   p->context.sp = p->kstack + PGSIZE;
+
+  p->hy_syscall_trace = 0; // 创建新进程的时候，kama_syscall_trace 设置为默认值0
 
   return p;
 }
@@ -296,6 +298,8 @@ fork(void)
   np->state = RUNNABLE;
 
   release(&np->lock);
+
+  np->hy_syscall_trace = p->hy_syscall_trace; //子进程继承父进程的syscall_trace
 
   return pid;
 }
@@ -691,5 +695,18 @@ procdump(void)
       state = "???";
     printf("%d %s %s", p->pid, state, p->name);
     printf("\n");
+  }
+}
+
+// 统计处于活动状态的进程
+void hy_procnum(uint64* dst)
+{
+  *dst = 0;
+  struct proc* p;
+  for (p = proc; p < &proc[NPROC]; p++)
+  {
+    if(p->state != UNUSED){
+      (*dst)++;
+    }
   }
 }

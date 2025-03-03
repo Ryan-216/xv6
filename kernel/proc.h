@@ -42,21 +42,21 @@ extern struct cpu cpus[NCPU];
 // return-to-user path via usertrapret() doesn't return through
 // the entire kernel call stack.
 struct trapframe {
-  /*   0 */ uint64 kernel_satp;   // kernel page table
-  /*   8 */ uint64 kernel_sp;     // top of process's kernel stack
-  /*  16 */ uint64 kernel_trap;   // usertrap()
-  /*  24 */ uint64 epc;           // saved user program counter
-  /*  32 */ uint64 kernel_hartid; // saved kernel tp
-  /*  40 */ uint64 ra;
-  /*  48 */ uint64 sp;
-  /*  56 */ uint64 gp;
-  /*  64 */ uint64 tp;
-  /*  72 */ uint64 t0;
-  /*  80 */ uint64 t1;
+  /*   0 */ uint64 kernel_satp;   // kernel page table  内核页表的 SATP 寄存器值。SATP 是 RISC-V 架构中用于控制页表的寄存器。这个字段保存了内核页表的根指针，用于在内核态访问内存。
+  /*   8 */ uint64 kernel_sp;     // top of process's kernel stack 内核栈的栈顶指针。当进程在内核态运行时，使用这个栈指针。
+  /*  16 */ uint64 kernel_trap;   // usertrap()  指向内核中处理陷阱的函数（usertrap()）。当用户态代码触发陷阱时，会跳转到这个函数。
+  /*  24 */ uint64 epc;           // saved user program counter 用户态程序计数器（PC）。当用户态代码触发陷阱时，epc 保存了用户态代码的当前指令地址。
+  /*  32 */ uint64 kernel_hartid; // saved kernel tp 内核的硬件线程ID（hartid）。在多核系统中，每个核心可能有自己的硬件线程ID，这个字段用于标识当前核心。
+  /*  40 */ uint64 ra;  //返回地址寄存器。保存函数调用的返回地址
+  /*  48 */ uint64 sp;  //用户栈指针。保存用户态栈的当前指针。
+  /*  56 */ uint64 gp;  //全局指针寄存器。在 RISC-V 中，gp 是一个特殊的寄存器，用于访问全局变量。
+  /*  64 */ uint64 tp;  //线程指针寄存器。用于访问线程局部存储。
+  /*  72 */ uint64 t0;  //t0 到 t6: 临时寄存器。这些寄存器在函数调用中用于临时存储数据。
+  /*  80 */ uint64 t1;  
   /*  88 */ uint64 t2;
-  /*  96 */ uint64 s0;
+  /*  96 */ uint64 s0;  //s0 到 s11: 调用者保存寄存器。这些寄存器在函数调用中需要被保存和恢复，因为它们保存了重要的上下文信息。
   /* 104 */ uint64 s1;
-  /* 112 */ uint64 a0;
+  /* 112 */ uint64 a0;  //a0 到 a7: 参数寄存器。用于传递函数调用的参数。
   /* 120 */ uint64 a1;
   /* 128 */ uint64 a2;
   /* 136 */ uint64 a3;
@@ -103,4 +103,5 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
+  uint64 hy_syscall_trace;   // 存储进程的系统调用跟踪掩码,用于记录哪些系统调用需要被跟踪
 };
