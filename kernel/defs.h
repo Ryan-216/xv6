@@ -158,10 +158,12 @@ void            uartputc_sync(int);
 int             uartgetc(void);
 
 // vm.c
+void            hy_kvm_map_pagetable(pagetable_t);
+void            hy_kvm_free_kernelpgtbl(pagetable_t);
 void            kvminit(void);
 void            kvminithart(void);
-uint64          kvmpa(uint64);
-void            kvmmap(uint64, uint64, uint64, int);
+uint64          kvmpa(pagetable_t, uint64);
+void            kvmmap(pagetable_t, uint64, uint64, uint64, int);
 int             mappages(pagetable_t, uint64, uint64, uint64, int);
 pagetable_t     uvmcreate(void);
 void            uvminit(pagetable_t, uchar *, uint);
@@ -179,6 +181,7 @@ int             copyout(pagetable_t, uint64, char *, uint64);
 int             copyin(pagetable_t, char *, uint64, uint64);
 int             copyinstr(pagetable_t, char *, uint64, uint64);
 int             hy_vmprint(pagetable_t);    //打印页表内容
+pagetable_t     hy_kvminit_newpgtbl();
 
 // plic.c
 void            plicinit(void);
