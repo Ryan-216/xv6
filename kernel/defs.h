@@ -158,6 +158,11 @@ void            uartputc_sync(int);
 int             uartgetc(void);
 
 // vm.c
+pte_t *         walk(pagetable_t pagetable, uint64 va, int alloc);
+int             copyinstr_new(pagetable_t pagetable, char *dst, uint64 srcva, uint64 max);
+int             copyin_new(pagetable_t pagetable, char *dst, uint64 srcva, uint64 len);
+uint64          hy_kvmdealloc(pagetable_t pagetable, uint64 oldsz, uint64 newsz);
+int             hy_kvmcopymappings(pagetable_t src, pagetable_t dst, uint64 start, uint64 sz);
 void            hy_kvm_map_pagetable(pagetable_t);
 void            hy_kvm_free_kernelpgtbl(pagetable_t);
 void            kvminit(void);
