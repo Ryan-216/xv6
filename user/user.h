@@ -30,6 +30,8 @@ void top(void);
 #ifdef LAB_NET
 int connect(uint32, uint16, uint16);
 #endif
+uint64 sigalarm(int ticks, void(*handler)());
+uint64 sigreturn(void);
 
 // ulib.c
 int stat(const char*, struct stat*);

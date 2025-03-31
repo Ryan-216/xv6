@@ -109,6 +109,8 @@ extern uint64 sys_uptime(void);
 extern uint64 sys_trace(void); // 全局声明trace系统调用处理函数
 extern uint64 sys_sysinfo(void);
 extern uint64 sys_top(void);
+extern uint64 sys_sigalarm(void);
+extern uint64 sys_sigreturn(void);
 
 //静态的函数指针数组
 static uint64 (*syscalls[])(void) = {
@@ -134,6 +136,8 @@ static uint64 (*syscalls[])(void) = {
 [SYS_link]    sys_link,
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
+[SYS_sigalarm]  sys_sigalarm,
+[SYS_sigreturn] sys_sigreturn,
 [SYS_trace]   sys_trace,  //  系统调用号与处理函数关联
 [SYS_sysinfo] sys_sysinfo,
 [SYS_top]     sys_top,

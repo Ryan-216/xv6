@@ -23,3 +23,5 @@
 #define SYS_trace  22
 #define SYS_sysinfo 23
 #define SYS_top 24
+#define SYS_sigalarm    25
+#define SYS_sigreturn   26

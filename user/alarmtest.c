@@ -11,12 +11,25 @@
 #include "kernel/stat.h"
 #include "kernel/riscv.h"
 #include "user/user.h"
+#include "kernel/syscall.h"
 
 void test0();
 void test1();
 void test2();
 void periodic();
 void slow_handler();
+
+uint64
+sigalarm(int ticks, void (*handler)())
+{
+  return syscall(SYS_sigalarm, ticks, handler);
+}
+
+uint64
+sigalarm()
+{
+  return syscall(SYS_sigreturn);
+}
 
 int
 main(int argc, char *argv[])

@@ -104,4 +104,11 @@ struct proc {
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
   uint64 hy_syscall_trace;   // 存储进程的系统调用跟踪掩码,用于记录哪些系统调用需要被跟踪
+
+  //时钟相关
+  int hy_alarm_interval;       // 时钟周期，为0时表示禁止时钟
+  void(*hy_alarm_handler)();      //时钟回调处理函数
+  int hy_alarm_ticks;             //当前时钟信号数(ticks数)
+  struct trapframe* hy_alarm_trapframe;    //时钟中断时刻进程的陷阱帧，用于恢复进程中断前的状态
+  int hy_alarm_goingoff;          //是否已经有一个时钟中断正在执行且还未返回
 };

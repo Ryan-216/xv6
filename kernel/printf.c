@@ -23,6 +23,19 @@ static struct {
   int locking;
 } pr;
 
+void
+hy_backtrace()
+{
+  uint64 fp = r_fp(); 
+  printf("backtrace:\n");
+  while (PGROUNDDOWN(fp) != PGROUNDUP(fp))  //当前帧指针fp是否在有效的页范围内
+  {
+    uint64 ra = *(uint64*)(fp-8); //return address 在 RISC-V 架构中，函数的返回地址通常存储在帧指针 fp 的前 8 个字节处（即 fp-8 的位置）
+    printf("%p\n", ra);
+    fp = *(uint64*)(fp-16); //previous fp 在 RISC-V 架构中，上一个帧指针通常存储在当前帧指针 fp 的前 16 个字节处（即 fp-16 的位置）
+  }
+}
+
 static char digits[] = "0123456789abcdef";
 
 static void

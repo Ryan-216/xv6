@@ -321,6 +321,20 @@ sfence_vma()
 }
 
 
+/*
+获取当前的帧指针（Frame Pointer，fp）值
+在 RISC-V 架构中，s0 寄存器通常用作帧指针
+asm：表示这是一个内联汇编指令，允许在C代码中嵌入汇编代码
+*/
+static inline uint64
+r_fp()
+{
+  uint64 x;
+  asm volatile("mv %0, s0" : "=r" (x)); //将寄存器 s0 的值移动到变量 x 中
+  return x;
+}
+
+
 #define PGSIZE 4096 // bytes per page
 #define PGSHIFT 12  // bits of offset within a page
 
