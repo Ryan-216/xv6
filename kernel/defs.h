@@ -77,6 +77,7 @@ int             piperead(struct pipe*, uint64, int);
 int             pipewrite(struct pipe*, uint64, int);
 
 // printf.c
+void            hy_backtrace();
 void            printf(char*, ...);
 void            panic(char*) __attribute__((noreturn));
 void            printfinit(void);
@@ -140,6 +141,8 @@ int             fetchaddr(uint64, uint64*);
 void            syscall();
 
 // trap.c
+int             hy_sigreturn();
+int             hy_sigalarm(int ticks, void(*handler)());
 extern uint     ticks;
 void            trapinit(void);
 void            trapinithart(void);
