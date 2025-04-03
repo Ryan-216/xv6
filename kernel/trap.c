@@ -68,9 +68,14 @@ usertrap(void)
   } else if((which_dev = devintr()) != 0){
     // ok
   } else {
-    printf("usertrap(): unexpected scause %p pid=%d\n", r_scause(), p->pid);
-    printf("            sepc=%p stval=%p\n", r_sepc(), r_stval());
-    p->killed = 1;
+    uint64 fault_va = r_stval();  //获取引发缺页异常的虚拟地址
+    if((r_scause()==13 || r_scause()==15) && hy_uvmshouldallocate(fault_va)){
+      hy_uvmlazyallocate(fault_va);
+    } else {
+      printf("usertrap(): unexpected scause %p pid=%d\n", r_scause(), p->pid);
+      printf("            sepc=%p stval=%p\n", r_sepc(), r_stval());
+      p->killed = 1;
+    }
   }
 
   if(p->killed)
