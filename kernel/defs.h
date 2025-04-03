@@ -162,6 +162,8 @@ int             uartgetc(void);
 pte_t*          walk(pagetable_t pagetable, uint64 va, int alloc);
 int             hy_uvmcheckcowpage(uint64 va);
 int             hy_uvmcowcopy(uint64 va);
+int             hy_uvmshouldallocate(uint64 va);
+void            hy_uvmlazyallocate(uint64 va);
 void            kvminit(void);
 void            kvminithart(void);
 uint64          kvmpa(uint64);
