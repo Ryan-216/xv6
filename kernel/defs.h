@@ -60,6 +60,8 @@ void            ramdiskintr(void);
 void            ramdiskrw(struct buf*);
 
 // kalloc.c
+void            hy_krefpage(void* pa);
+void*           hy_kcopy_n_deref(void* pa);
 void*           kalloc(void);
 void            kfree(void *);
 void            kinit(void);
@@ -154,6 +156,9 @@ void            uartputc_sync(int);
 int             uartgetc(void);
 
 // vm.c
+pte_t*          walk(pagetable_t pagetable, uint64 va, int alloc);
+int             hy_uvmcheckcowpage(uint64 va);
+int             hy_uvmcowcopy(uint64 va);
 void            kvminit(void);
 void            kvminithart(void);
 uint64          kvmpa(uint64);
@@ -171,6 +176,7 @@ uint64          walkaddr(pagetable_t, uint64);
 int             copyout(pagetable_t, uint64, char *, uint64);
 int             copyin(pagetable_t, char *, uint64, uint64);
 int             copyinstr(pagetable_t, char *, uint64, uint64);
+
 
 // plic.c
 void            plicinit(void);
