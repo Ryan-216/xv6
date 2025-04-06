@@ -65,3 +65,7 @@
 //   TRAPFRAME (p->trapframe, used by the trampoline)
 //   TRAMPOLINE (the same page as in the kernel)
 #define TRAPFRAME (TRAMPOLINE - PGSIZE)
+
+//  文件内存最后一个页(开区间)
+#define MMAPEND TRAPFRAME
+
