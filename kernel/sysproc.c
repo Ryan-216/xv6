@@ -118,7 +118,7 @@ sys_sysinfo(void)
 
   //获取用户虚拟地址
   uint64 dstaddr;
-  argaddr(0, &dstaddr);
+  argaddr(0, &dstaddr); //因为int sysinfo(struct sysinfo*);
 
   //从内核空间拷贝数据到用户空间
   if(copyout(myproc()->pagetable, dstaddr, (char*)&info, sizeof info) < 0){

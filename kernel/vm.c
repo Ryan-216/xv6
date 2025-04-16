@@ -49,11 +49,13 @@ kvminit()
 
 // Switch h/w page table register to the kernel's page table,
 // and enable paging.
+// 将 satp 寄存器设置为kernel_pagetable，确保内核使用正确的页表。
+// 刷新 TLB，确保后续的地址翻译使用最新的页表信息。
 void
 kvminithart()
 {
   w_satp(MAKE_SATP(kernel_pagetable));
-  sfence_vma();
+  sfence_vma(); // 刷新 TLB（Translation Lookaside Buffer）
 }
 
 // Return the address of the PTE in page table pagetable
@@ -75,7 +77,7 @@ walk(pagetable_t pagetable, uint64 va, int alloc)
     panic("walk");
 
   for(int level = 2; level > 0; level--) {
-    pte_t *pte = &pagetable[PX(level, va)];
+    pte_t *pte = &pagetable[PX(level, va)]; //获取当前级的页表项地址 PX(level, va)获取对应索引
     if(*pte & PTE_V) {
       pagetable = (pagetable_t)PTE2PA(*pte);
     } else {
@@ -196,6 +198,7 @@ uvmunmap(pagetable_t pagetable, uint64 va, uint64 npages, int do_free)
 
 // create an empty user page table.
 // returns 0 if out of memory.
+// 同时分配了物理内存
 pagetable_t
 uvmcreate()
 {
@@ -368,7 +371,7 @@ copyout(pagetable_t pagetable, uint64 dstva, char *src, uint64 len)
 
     len -= n;
     src += n;
-    dstva = va0 + PGSIZE;
+    dstva = va0 + PGSIZE; // 更新为下一页
   }
   return 0;
 }

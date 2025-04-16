@@ -289,6 +289,7 @@ r_sp()
 
 // read and write tp, the thread pointer, which holds
 // this core's hartid (core number), the index into cpus[].
+// 在 xv6 操作系统中，tp 寄存器被用来存储当前核心的 hartid（核心编号）
 static inline uint64
 r_tp()
 {

@@ -8,6 +8,7 @@
 #include "defs.h"
 
 // Fetch the uint64 at addr from the current process.
+// 从addr开始拷贝uint64到ip
 int
 fetchaddr(uint64 addr, uint64 *ip)
 {
@@ -30,7 +31,8 @@ fetchstr(uint64 addr, char *buf, int max)
     return err;
   return strlen(buf);
 }
-
+// 获取寄存器an的值
+// 这些寄存器用于传递系统调用的参数
 static uint64
 argraw(int n)
 {

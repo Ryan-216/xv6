@@ -49,10 +49,15 @@
 
 // map the trampoline page to the highest address,
 // in both user and kernel space.
+// 陷阱页面位于最高位置，1 PGSIZE
+// 定义陷阱（trampoline）页面的虚拟地址
 #define TRAMPOLINE (MAXVA - PGSIZE)
 
 // map kernel stacks beneath the trampoline,
 // each surrounded by invalid guard pages.
+// 计算进程 p 的内核栈的虚拟地址
+// 2 PGSIZE
+// 每个内核栈之间有一个无效的保护页面，用于防止栈溢出
 #define KSTACK(p) (TRAMPOLINE - ((p)+1)* 2*PGSIZE)
 
 // User memory layout.

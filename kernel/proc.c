@@ -22,6 +22,7 @@ static void freeproc(struct proc *p);
 extern char trampoline[]; // trampoline.S
 
 // initialize the proc table at boot time.
+// 初始化进程
 void
 procinit(void)
 {
@@ -66,7 +67,7 @@ mycpu(void) {
 // Return the current struct proc *, or zero if none.
 struct proc*
 myproc(void) {
-  push_off(); //关闭中断（中断屏蔽）
+  push_off(); //关闭中断
   struct cpu *c = mycpu();
   struct proc *p = c->proc;
   pop_off();  //恢复中断状态

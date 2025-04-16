@@ -1,9 +1,9 @@
 // Saved registers for kernel context switches.
 struct context {
-  uint64 ra;
-  uint64 sp;
+  uint64 ra;  // 保存返回地址寄存器（ra）的值
+  uint64 sp;  // 保存栈指针寄存器（sp）的值。
 
-  // callee-saved
+  // callee-saved 这些寄存器通常用于存储局部变量和函数参数
   uint64 s0;
   uint64 s1;
   uint64 s2;
@@ -22,8 +22,8 @@ struct context {
 struct cpu {
   struct proc *proc;          // The process running on this cpu, or null.
   struct context context;     // swtch() here to enter scheduler().
-  int noff;                   // Depth of push_off() nesting.
-  int intena;                 // Were interrupts enabled before push_off()?
+  int noff;                   // Depth of push_off() nesting. 记录 push_off() 调用的嵌套深度
+  int intena;                 // Were interrupts enabled before push_off()? 记录在调用 push_off() 之前中断是否启用
 };
 
 extern struct cpu cpus[NCPU];
@@ -57,8 +57,8 @@ struct trapframe {
   /*  96 */ uint64 s0;  //s0 到 s11: 调用者保存寄存器。这些寄存器在函数调用中需要被保存和恢复，因为它们保存了重要的上下文信息。
   /* 104 */ uint64 s1;
   /* 112 */ uint64 a0;  //a0 到 a7: 参数寄存器。用于传递函数调用的参数。
-  /* 120 */ uint64 a1;
-  /* 128 */ uint64 a2;
+  /* 120 */ uint64 a1;  //a0-a5: 系统调用参数
+  /* 128 */ uint64 a2;  //a7 系统调用号
   /* 136 */ uint64 a3;
   /* 144 */ uint64 a4;
   /* 152 */ uint64 a5;
@@ -89,7 +89,7 @@ struct proc {
   // p->lock must be held when using these:
   enum procstate state;        // Process state
   struct proc *parent;         // Parent process
-  void *chan;                  // If non-zero, sleeping on chan
+  void *chan;                  // If non-zero, sleeping on chan 如果进程正在睡眠中，chan 指向它正在等待的通道
   int killed;                  // If non-zero, have been killed
   int xstate;                  // Exit status to be returned to parent's wait
   int pid;                     // Process ID
