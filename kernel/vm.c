@@ -19,12 +19,12 @@ extern char trampoline[]; // trampoline.S
 int
 hy_kvmcopymappings(pagetable_t src, pagetable_t dst, uint64 start, uint64 sz)
 {
-  pte_t* pte;
+  pte_t* pte = walk(src, PGROUNDUP(start), 0);
   uint64 pa, i;
   uint flags;
 
   // PGROUNDUP: 将地址向上取整到页边界，防止重新映射已经映射的页，特别是在执行growproc操作时
-  for (int i = PGROUNDUP(start); i < start + sz; i+=PGSIZE)
+  for (i = PGROUNDUP(start); i < start + sz; i+=PGSIZE)
   {
     if((pte == walk(src, i, 0)) == 0){
       panic("kvmcopymappings: pte not exist");
@@ -139,6 +139,7 @@ kvminithart()
 //   21..29 -- 9 bits of level-1 index.
 //   12..20 -- 9 bits of level-0 index.
 //    0..11 -- 12 bits of byte offset within the page.
+// 返回va所在的PPN，获得pa还需要pte to pa + offset
 pte_t *
 walk(pagetable_t pagetable, uint64 va, int alloc)
 {
@@ -146,7 +147,7 @@ walk(pagetable_t pagetable, uint64 va, int alloc)
     panic("walk");
 
   for(int level = 2; level > 0; level--) {
-    pte_t *pte = &pagetable[PX(level, va)];
+    pte_t *pte = &pagetable[PX(level, va)]; 
     if(*pte & PTE_V) {
       pagetable = (pagetable_t)PTE2PA(*pte);
     } else {
@@ -213,7 +214,7 @@ kvmpa(pagetable_t pgtbl, uint64 va)
   pa = PTE2PA(*pte);
   return pa+off;
 }
-
+// 递归释放一个内核页表中的所有映射，但是不释放其指向的物理页
 void
 hy_kvm_free_kernelpgtbl(pagetable_t pagetable){
   for (int i = 0; i < 512; i++)

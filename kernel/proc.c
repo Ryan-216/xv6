@@ -37,7 +37,7 @@ procinit(void)
       // char *pa = kalloc();
       // if(pa == 0)
       //   panic("kalloc");
-      // uint64 va = KSTACK((int) (p - proc));
+      // uint64 va = KSTACK((int) (p - proc));  // 在C语言中，当你有两个指向相同数组的指针时，它们之间的减法操作会返回它们之间元素的数量，而不是它们之间地址的差
       // kvmmap(va, (uint64)pa, PGSIZE, PTE_R | PTE_W);
       // p->kstack = va;
   }
@@ -513,7 +513,7 @@ scheduler(void)
         w_satp(MAKE_SATP(p->hy_kernelpgtbl));
         sfence_vma();       // 清除快表缓存，刷新TLB缓存，以确保地址转换表的更改生效
 
-        swtch(&c->context, &p->context);
+        swtch(&c->context, &p->context);  //把当前状态保存到c->context, 加载p->context到cpu寄存器
         // 切换回全局内核页表
         kvminithart();
 
