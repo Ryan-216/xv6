@@ -126,3 +126,17 @@ sys_sysinfo(void)
   }
   return 0;
 }
+
+uint64
+sys_top(void)
+{
+  uint64 pro_sum[5] = {0,0,0,0,0};
+  struct sysinfo info;
+  hy_freebytes(&info.freemem);
+  hy_procnum(&info.nproc);
+  printf("Free page number : %d\nActive process number : %d\n",info.freemem, info.nproc);
+  hy_top_proc(pro_sum);
+  printf("[Summary] %d process unused, %d process sleeping, %d process runnable, %d process running, %d process zombie\n",\
+    pro_sum[0],pro_sum[1],pro_sum[2],pro_sum[3],pro_sum[4] );
+  return 0;
+}

@@ -27,6 +27,7 @@ int sleep(int);
 int uptime(void);
 int trace(int); //让用户态程序可以找到这个跳板入口函数
 int sysinfo(struct sysinfo*);
+void top(void);
 
 // ulib.c
 int stat(const char*, struct stat*);

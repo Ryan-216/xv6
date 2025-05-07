@@ -156,6 +156,7 @@ UPROGS=\
 	$U/_zombie\
 	$U/_mytrace\
 	$U/_sysinfotest\
+	$U/_mytop\
 
 
 ifeq ($(LAB),trap)

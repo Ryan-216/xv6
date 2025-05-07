@@ -38,3 +38,4 @@ entry("sleep");
 entry("uptime");
 entry("trace"); #加入用户态到内核态的跳板函数
 entry("sysinfo");
+entry("top");

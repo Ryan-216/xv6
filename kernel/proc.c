@@ -711,3 +711,34 @@ void hy_procnum(uint64* dst)
     }
   }
 }
+
+void 
+hy_top_proc(uint64 dst[5])
+{
+  struct proc* p;
+  for (p = proc; p < &proc[NPROC]; p++)
+  {
+    dst[p->state]++;
+    if(p->state != UNUSED){
+      char state[10]="";
+      switch (p->state)
+      {
+      case ZOMBIE:
+        strncpy(state,"ZOMBIE",sizeof("ZOMBIE"));
+        break;
+      case SLEEPING:
+        strncpy(state,"SLEEPING",sizeof("SLEEPING"));
+        break;
+      case RUNNABLE:
+        strncpy(state,"RUNNABLE",sizeof("RUNNABLE"));
+        break;
+      case RUNNING:
+        strncpy(state,"RUNNING",sizeof("RUNNING"));
+        break;
+      default:
+        break;
+      }
+      printf("Process name : %s, state : %s, memory size : %d\n", p->name, state, p->sz);
+    }
+  }
+}
