@@ -116,7 +116,7 @@ sys_sysinfo(void)
   hy_freebytes(&info.freemem);
   hy_procnum(&info.nproc);
 
-  //获取用户虚拟地址
+  //获取用户sysinfo结构体的虚拟地址
   uint64 dstaddr;
   argaddr(0, &dstaddr); //因为int sysinfo(struct sysinfo*);
 

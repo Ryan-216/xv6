@@ -106,9 +106,14 @@ tags: $(OBJS) _init
 
 ULIB = $U/ulib.o $U/usys.o $U/printf.o $U/umalloc.o
 
-_%: %.o $(ULIB)
-	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o $@ $^
-	$(OBJDUMP) -S $@ > $*.asm
+# 指定编译规则
+# 从目标文件（.o 文件）和用户库（$(ULIB)）链接生成用户程序的可执行文件
+# 链接用户程序的可执行文件，指定了入口点、文本段起始地址等
+# 使用 objdump 工具生成可执行文件的汇编代码，便于调试和分析
+# 使用 objdump 工具生成可执行文件的符号表，并进行简单的格式化处理，以便于查看和使用
+_%: %.o $(ULIB)	
+	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o $@ $^	
+	$(OBJDUMP) -S $@ > $*.asm 
 	$(OBJDUMP) -t $@ | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$$/d' > $*.sym
 
 $U/usys.S : $U/usys.pl
@@ -149,7 +154,7 @@ UPROGS=\
 	$U/_grind\
 	$U/_wc\
 	$U/_zombie\
-	$U/_trace\
+	$U/_mytrace\
 	$U/_sysinfotest\
 
 
