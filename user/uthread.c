@@ -101,7 +101,7 @@ thread_create(void (*func)())
   t->context.ra = (uint64)func;
   
   // 栈指针，将线程的栈指针指向其独立的栈，栈的生长是从高地址到低地址，所以要将 sp 设置为指向 stack 的最高地址
-  t->context.sp = (uint64)&t->stack + (STACK_SIZE - 1); //?
+  t->context.sp = (uint64)&t->stack + (STACK_SIZE - 1);
 }
 
 void 
