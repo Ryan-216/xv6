@@ -67,5 +67,5 @@
 #define TRAPFRAME (TRAMPOLINE - PGSIZE)
 
 //  文件内存最后一个页(开区间)
-#define MMAPEND TRAPFRAME
+#define MMAPEND (TRAPFRAME - PGSIZE)
 
