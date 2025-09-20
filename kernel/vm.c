@@ -65,9 +65,6 @@ hy_kvmdealloc(pagetable_t pagetable, uint64 oldsz, uint64 newsz){
   return newsz;
 }
 
-
-
-
 /*
  * create a direct-map page table for the kernel.
  */
@@ -139,7 +136,7 @@ kvminithart()
 //   21..29 -- 9 bits of level-1 index.
 //   12..20 -- 9 bits of level-0 index.
 //    0..11 -- 12 bits of byte offset within the page.
-// 返回va所在的PPN，获得pa还需要pte to pa + offset
+// 返回va所在最后一级页表的pte，获得pa还需要pte to pa + offset
 pte_t *
 walk(pagetable_t pagetable, uint64 va, int alloc)
 {
