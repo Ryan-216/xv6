@@ -82,16 +82,18 @@ kfree(void *pa)
 
     r = (struct run*)pa;
 
-  push_off();
+    push_off();
 
-  int cpu = cpuid(); // 获取cpu编号。中断关闭时调用cpuid才是安全的，所以上面用push_off关闭中断
+    int cpu = cpuid(); // 获取cpu编号。中断关闭时调用cpuid才是安全的，所以上面用push_off关闭中断
 
-  acquire(&kmem[cpu].lock);         //将释放的页插入当前CPU的freelist中
-  r->next = kmem[cpu].freelist;
-  kmem[cpu].freelist = r;
-  release(&kmem[cpu].lock);
+    acquire(&kmem[cpu].lock);         //将释放的页插入当前CPU的freelist中
+    r->next = kmem[cpu].freelist;
+    kmem[cpu].freelist = r;
+    release(&kmem[cpu].lock);
 
-  pop_off();                //重新打开中断
+    pop_off();    
+  }
+  release(&pgreflock);
 }
 
 // Allocate one 4096-byte page of physical memory.
@@ -156,16 +158,20 @@ void
 hy_freebytes(uint64* dst)
 {
   *dst = 0;
-  struct run* p = kmem.freelist;  //空闲链表机制存储空闲物理内存页
-  acquire(&kmem.lock);  //获得锁
-
-  while (p)
+  for (int cpu = 0; cpu < NCPU; cpu++)
   {
-    *dst += PGSIZE;
-    p=p->next;
+    struct run* p = kmem[cpu].freelist;  //空闲链表机制存储空闲物理内存页
+    acquire(&kmem[cpu].lock);  //获得锁
+
+    while (p)
+    {
+      *dst += PGSIZE;
+      p=p->next;
+    }
+    
+    release(&kmem[cpu].lock);  //释放锁
   }
   
-  release(&kmem.lock);  //释放锁
 }
 
 //物理页引用数+1
