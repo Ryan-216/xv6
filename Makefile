@@ -178,8 +178,7 @@ UPROGS=\
 	$U/_mytrace\
 	$U/_sysinfotest\
 	$U/_mytop\
-	$U/_sigalarm\
-	$U/_sigreturn\
+	$U/_alarmtest
 
 
 

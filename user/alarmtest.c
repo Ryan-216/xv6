@@ -19,17 +19,6 @@ void test2();
 void periodic();
 void slow_handler();
 
-uint64
-sigalarm(int ticks, void (*handler)())
-{
-  return syscall(SYS_sigalarm, ticks, handler);
-}
-
-uint64
-sigalarm()
-{
-  return syscall(SYS_sigreturn);
-}
 
 int
 main(int argc, char *argv[])

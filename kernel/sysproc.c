@@ -116,7 +116,7 @@ sys_sigalarm(void)
   uint64 fn;  //时钟回调函数
   if(argint(0, &n) < 0) //获取第一个参数
     return -1;
-  if(argaddr(0, &fn) < 0) //获取第二个参数
+  if(argaddr(1, &fn) < 0) //获取第二个参数
     return -1;
   return hy_sigalarm(n,(void(*)())(fn));  //调用并返回kama_sigalarm函数
 }
