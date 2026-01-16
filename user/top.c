@@ -12,7 +12,9 @@ main(int argc, char *argv[])
     exit(1);
   }
 
+  printf("\033[2J\033[H");
   top();
+  // 10 ticks = 1秒。
 
   exit(0);
 }

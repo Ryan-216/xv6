@@ -29,6 +29,7 @@ struct run {
 struct {
   struct spinlock lock;
   struct run *freelist;
+  int npage; // 页数计数
 } kmem[NCPU];
 
 char* keme_lock_names[] = {
@@ -89,6 +90,7 @@ kfree(void *pa)
     acquire(&kmem[cpu].lock);         //将释放的页插入当前CPU的freelist中
     r->next = kmem[cpu].freelist;
     kmem[cpu].freelist = r;
+    kmem[cpu].npage++;
     release(&kmem[cpu].lock);
 
     pop_off();    
@@ -110,37 +112,48 @@ kalloc(void)
 
   acquire(&kmem[cpu].lock);
 
-  if (!kmem[cpu].freelist) {        // 当前CPU已经没有freelist的时候，去其他CPU偷内存页
-      int steal_left = 64;          // 这里指定偷64个内存页
+  // 低水位线 32，如果低于此值，尝试偷内存
+  if (kmem[cpu].npage < 32) {
+      int steal_num = 64;           // 每次偷64
+      release(&kmem[cpu].lock);     // 先释放当前CPU的锁，避免死锁
+
       for (int i = 0;i < NCPU;++i) {
           if (i == cpu)
               continue;             // 跳过当前CPU
           
           acquire(&kmem[i].lock);
-          if (!kmem[i].freelist) {      // 如果在想要偷页的cpu也没有freelist了，就释放锁跳过
+          // 高水位线 128，只有高于此值才允许被偷
+          if (kmem[i].npage > 128) {
+              struct run *head = kmem[i].freelist;
+              struct run *curr = head;
+              int count = 1;
+              // 找到要偷取的链表尾部 (第64个节点)
+              while(curr->next && count < steal_num) {
+                  curr = curr->next;
+                  count++;
+              }
+              kmem[i].freelist = curr->next; // 断开原链表
+              curr->next = 0;                // 截断偷取的链表
+              kmem[i].npage -= count;        // 更新被偷CPU的页数
               release(&kmem[i].lock);
-              continue;
-          }
 
-          struct run* rr = kmem[i].freelist;
-          while (rr && steal_left) {           // 循环将kmem[i]的freelist移动到kmem[cpu]中
-              kmem[i].freelist = rr->next;
-              rr->next = kmem[cpu].freelist;  //  头插法
-              kmem[cpu].freelist = rr;
-              rr = kmem[i].freelist;
-              steal_left--;
+              acquire(&kmem[cpu].lock);      // 获取当前CPU锁
+              curr->next = kmem[cpu].freelist; // 将偷取的链表插入当前CPU freelist
+              kmem[cpu].freelist = head;
+              kmem[cpu].npage += count;      // 更新当前CPU的页数
+              goto allocated;                // 已经持有锁，直接跳转到分配
           }
-
           release(&kmem[i].lock);
-          
-          if (steal_left == 0)       // 偷到指定页数后退出循环
-              break;
       }
+      acquire(&kmem[cpu].lock);          // 如果没偷到，重新获取锁
   }
 
+allocated:
   r = kmem[cpu].freelist;
-  if(r)
+  if(r) {
     kmem[cpu].freelist = r->next;
+    kmem[cpu].npage--;
+  }
   release(&kmem[cpu].lock);
 
   pop_off();				//打开中断

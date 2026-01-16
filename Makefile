@@ -175,9 +175,9 @@ UPROGS=\
 	$U/_grind\
 	$U/_wc\
 	$U/_zombie\
-	$U/_mytrace\
+	$U/_trace\
 	$U/_sysinfotest\
-	$U/_mytop\
+	$U/_top\
 	$U/_alarmtest
 
 

@@ -265,7 +265,7 @@ hy_uvmcowcopy(uint64 va){
   //修改新的映射，恢复写权限，清除COW标志
   uint64 flags = (PTE_FLAGS(*pte) | PTE_W) & ~PTE_COW;
   uvmunmap(p->pagetable, PGROUNDDOWN(va), 1, 0);              //清除旧的映射
-  if (mappages(p->pagetable, va, 1, new, flags) == -1){       //新的映射
+  if (mappages(p->pagetable, PGROUNDDOWN(va), PGSIZE, new, flags) == -1){       //新的映射
     panic("uvmcowcopy: mappages");
   }
 
